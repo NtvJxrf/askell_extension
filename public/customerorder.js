@@ -49,11 +49,16 @@
 
       const wrapper = fieldWrapper?.nextElementSibling; // родитель input
       if (!wrapper) continue;
+      let color = "orange"
+      chrome.storage.local.get("outlineColor", (result) => {
+        console.log(result)
+        color = result.outlineColor || "orange";
+      });
 
       const updateStyle = () => {
         if (!input.value.trim()) {
-          wrapper.style.outline = "1.5px solid orange";
-          wrapper.style.borderColor = "orange";
+          wrapper.style.outline = `1.5px solid ${color}`;
+          wrapper.style.borderColor = color;
         } else {
           wrapper.style.outline = "";
           wrapper.style.borderColor = "";
