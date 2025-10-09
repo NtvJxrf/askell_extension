@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Расширение на React + Vite",
   "action": {
-    "default_popup": "index.html",
+    "default_popup": "src/popup/popup.html",
     "default_icon": "icon.png"
   },
   "background": {
@@ -13,5 +13,5 @@
   "host_permissions": [
     "https://online.moysklad.ru/*"
   ],
-  "permissions": ["storage", "tabs", "activeTab", "scripting"]
+  "permissions": ["storage", "tabs", "activeTab", "scripting", "windows"]
 }

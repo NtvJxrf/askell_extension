@@ -8,7 +8,6 @@ function checkUrl(tab) {
   }
   
 }
-
 // Когда активная вкладка меняется
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
   const tab = await chrome.tabs.get(activeInfo.tabId);
