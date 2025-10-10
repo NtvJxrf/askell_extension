@@ -1,16 +1,4 @@
 (() => {
-  // === Наблюдение за контейнером IXFIY (если нужно) ===
-  function observeContainer() {
-    const observer = new MutationObserver((mutations, obs) => {
-      const container = document.querySelector(".IXFIY");
-      if (container) {
-        createActionsDropdown(container);
-        obs.disconnect();
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-  }
-
   const attribues = [
     'Телефон получателя', 
     'Город получателя', 
@@ -35,10 +23,20 @@
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
+  async function getOutlineColor() {
+    return new Promise((resolve) => {
+      chrome.storage.local.get("outlineColor", (result) => {
+        resolve(result.outlineColor || "orange");
+      });
+    });
+  }
+
   // === Основной код подсветки полей ===
-  function observeAttributesList(container) {
+  async function observeAttributesList(container) {
     const labelArray = Array.from(container.querySelectorAll("span.Q\\+YVt"));
     if (!labelArray.length) return;
+
+    const color = await getOutlineColor();
 
     for (const label of labelArray) {
       if (!attribues.includes(label.innerText)) continue;
@@ -47,13 +45,8 @@
       const input = fieldWrapper?.nextElementSibling?.querySelector("input");
       if (!input) continue;
 
-      const wrapper = fieldWrapper?.nextElementSibling; // родитель input
+      const wrapper = fieldWrapper?.nextElementSibling;
       if (!wrapper) continue;
-      let color = "orange"
-      chrome.storage.local.get("outlineColor", (result) => {
-        console.log(result)
-        color = result.outlineColor || "orange";
-      });
 
       const updateStyle = () => {
         if (!input.value.trim()) {

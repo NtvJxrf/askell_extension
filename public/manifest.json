@@ -11,7 +11,9 @@
     "service_worker": "background.js"
   },
   "host_permissions": [
-    "https://online.moysklad.ru/*"
+    "https://online.moysklad.ru/*",
+    "https://calc.askell.ru/*",
+    "https://*.google.com/*"
   ],
   "permissions": ["storage", "tabs", "activeTab", "scripting", "windows"]
 }

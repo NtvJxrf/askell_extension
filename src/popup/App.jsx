@@ -10,6 +10,7 @@ export default function App() {
   const [pageType, setPageType] = useState(null);
   const [user, setUser] = useState(null)
   const [screen, setScreen] = useState("main");
+  const [documentId, setDocumentId] = useState(null);
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, async ([tab]) => {
       const url = tab?.url || "";
@@ -17,13 +18,23 @@ export default function App() {
       else if (url.includes("invoiceout/edit")) setPageType("invoiceout/edit");
       else setPageType("unknown");
 
+      try {
+        const hash = url.split("#")[1] || "";
+        const [path, queryString] = hash.split("?");
+        const params = new URLSearchParams(queryString);
+        const id = params.get("id");
+        setDocumentId(id);
+      } catch (e) {
+        console.warn("Не удалось распарсить URL:", e);
+      }
+
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         files: ["content.js"],
       });
 
-      chrome.tabs.sendMessage(tab.id, { action: "getLocalStorage", key: "HDE_VISITOR_DATA[online.moysklad.ru]" }, (response) => {
-        setUser(JSON.parse(response))
+      chrome.tabs.sendMessage(tab.id, { action: "getUser" }, (response) => {
+        setUser(response)
       });
     });
   }, []);
@@ -52,7 +63,7 @@ export default function App() {
     }
   };
   return (
-    <div style={{ padding: 16, width: 400}}>
+    <div style={{ padding: 16, width: 500, height: 700}}>
       {screen === "main" && (
         <Button type="text" icon={<SettingOutlined />} onClick={() => setScreen("settings")}
           style={{
@@ -65,7 +76,7 @@ export default function App() {
       )}
       {screen === "main" && renderActions()}
       {screen === "reclamation" && <ReclamationScreen onBack={() => setScreen("main")} />}
-      {screen === "logistics" && <LogisticsScreen onBack={() => setScreen("main")} />}
+      {screen === "logistics" && <LogisticsScreen onBack={() => setScreen("main")} data={{user, documentId}}/>}
       {screen === "settings" && <SettingsScreen onBack={() => setScreen("main")} />}
     </div>
   );
