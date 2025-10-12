@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, ColorPicker, Space, Typography, Checkbox } from "antd";
+import { Button, ColorPicker, Space, Typography, Checkbox, Select } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
@@ -7,24 +7,36 @@ const { Title } = Typography;
 export default function SettingsScreen({ onBack }) {
   const [color, setColor] = useState("#ffa500");
   const [highlightCustomerOrderFields, setHighlightRequired] = useState(true);
+  const [attributesList, setAttributesList] = useState([]);
 
-  // Загружаем настройки из chrome.storage
   useEffect(() => {
-    chrome.storage.local.get(["outlineColor", "highlightCustomerOrderFields"], (result) => {
-      if (result.outlineColor) setColor(result.outlineColor);
-      if (typeof result.highlightCustomerOrderFields === "boolean")
-        setHighlightRequired(result.highlightCustomerOrderFields);
-    });
+    chrome.storage.local.get(
+      ["outlineColor", "highlightCustomerOrderFields", "attributesList"],
+      (result) => {
+        if (result.outlineColor) setColor(result.outlineColor);
+        if (typeof result.highlightCustomerOrderFields === "boolean")
+          setHighlightRequired(result.highlightCustomerOrderFields);
+        if (Array.isArray(result.attributesList))
+          setAttributesList(result.attributesList);
+      }
+    );
   }, []);
 
-  // Обновление цвета
+  const saveAttributes = (list) => {
+    setAttributesList(list);
+    chrome.storage.local.set({ attributesList: list });
+  };
+
+  const handleChangeAttributes = (value) => {
+    saveAttributes(value);
+  };
+
   const handleChangeColor = (value) => {
     const hex = typeof value === "string" ? value : value.toHexString();
     setColor(hex);
     chrome.storage.local.set({ outlineColor: hex });
   };
 
-  // Обновление чекбокса
   const handleChangeHighlight = (e) => {
     const checked = e.target.checked;
     setHighlightRequired(checked);
@@ -57,6 +69,20 @@ export default function SettingsScreen({ onBack }) {
             </Title>
           </Checkbox>
         </Space>
+
+        <div style={{ width: "100%" }}>
+          <Space style={{ width: "100%", justifyContent: "space-between", alignItems: "center" }}>
+            <Title level={5} style={{ margin: 0 }}>Названия доп. полей для подсветки</Title>
+          </Space>
+
+          <Select
+            mode="tags"
+            style={{ width: "100%" }}
+            placeholder="Добавьте обязательные поля"
+            value={attributesList}
+            onChange={handleChangeAttributes}
+          />
+        </div>
       </Space>
     </div>
   );
