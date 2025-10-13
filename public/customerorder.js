@@ -14,7 +14,7 @@
         if (Array.isArray(result.attributesList) && result.attributesList.length > 0) {
           resolve(result.attributesList);
         } else {
-          resolve(["Вид доставки"]);
+          resolve([]);
         }
       });
     });

@@ -46,6 +46,7 @@ export default function SettingsScreen({ onBack }) {
   return (
     <div style={{ padding: 20 }}>
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
+        
         <Button
           type="default"
           icon={<ArrowLeftOutlined />}

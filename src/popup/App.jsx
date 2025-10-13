@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Space, Typography, Divider } from "antd";
-import { FileTextOutlined, ShoppingOutlined, InboxOutlined, TruckOutlined, ExclamationCircleOutlined, MehOutlined, SettingOutlined } from "@ant-design/icons";
+import { FileTextOutlined, ShoppingOutlined, UndoOutlined, TruckOutlined, ExclamationCircleOutlined, MehOutlined, SettingOutlined } from "@ant-design/icons";
 import ReclamationScreen from '../screens/ReclamationScreen';
 import LogisticsScreen from '../screens/LogisticsScreen';
 import SettingsScreen from "../screens/SettingsScreen";
@@ -63,20 +63,45 @@ export default function App() {
     }
   };
   return (
-    <div style={{ padding: 16, width: 500, height: 700}}>
+    <div style={{ padding: 16, position: "relative" }}>
       {screen === "main" && (
-        <Button type="text" icon={<SettingOutlined />} onClick={() => setScreen("settings")}
-          style={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            color: "#555",
-          }}
+        <>
+          <div
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              display: "flex",
+              gap: 8,
+            }}
+          >
+            <Button
+              type="text"
+              icon={<UndoOutlined />}
+              onClick={() => chrome.runtime.reload()}
+              style={{ color: "#555" }}
+            />
+            <Button
+              type="text"
+              icon={<SettingOutlined />}
+              onClick={() => setScreen("settings")}
+              style={{ color: "#555" }}
+            />
+          </div>
+
+          {renderActions()}
+        </>
+      )}
+
+      {screen === "reclamation" && (
+        <ReclamationScreen onBack={() => setScreen("main")} data={{ user, documentId }}/>
+      )}
+      {screen === "logistics" && (
+        <LogisticsScreen
+          onBack={() => setScreen("main")}
+          data={{ user, documentId }}
         />
       )}
-      {screen === "main" && renderActions()}
-      {screen === "reclamation" && <ReclamationScreen onBack={() => setScreen("main")} />}
-      {screen === "logistics" && <LogisticsScreen onBack={() => setScreen("main")} data={{user, documentId}}/>}
       {screen === "settings" && <SettingsScreen onBack={() => setScreen("main")} />}
     </div>
   );

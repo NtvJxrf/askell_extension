@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "My React Extension",
+  "name": "Askell extension",
   "version": "1.0.0",
-  "description": "Расширение на React + Vite",
+  "description": "Расширение для MoySklad",
   "action": {
     "default_popup": "src/popup/popup.html",
     "default_icon": "icon.png"
@@ -15,5 +15,9 @@
     "https://calc.askell.ru/*",
     "https://*.google.com/*"
   ],
+  "side_panel": {
+    "default_path": "src/popup/popup.html",
+    "enabled": true
+  },
   "permissions": ["storage", "tabs", "activeTab", "scripting", "windows"]
 }

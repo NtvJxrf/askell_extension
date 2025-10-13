@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { Button, Typography, Form, Input, DatePicker, Select, InputNumber, TimePicker, Space, message, notification } from "antd";
+import { Button, Typography, Form, Input, DatePicker, Select, InputNumber, Space, message, ConfigProvider} from "antd";
+import ruRU from "antd/locale/ru_RU";
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
+dayjs.locale("ru");
 const { Title } = Typography;
 const { Option } = Select;
 
 export default function LogisticsScreen({ onBack, data }) {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const [disabled, setDisabled] = useState(false)
   const handleFinish = async (values) => {
+    setDisabled(true)
     const targetDate = values.targetDate.format("DD.MM.YYYY");
     const dataFromForm = {
       ...values,
@@ -15,9 +21,9 @@ export default function LogisticsScreen({ onBack, data }) {
       targetDate,
     };
     chrome.runtime.sendMessage({ action: "logisticRequest", data: { dataFromForm, user: data.user}}, (response) => {
-      console.log(response)
+      setDisabled(false)
       messageApi.open({
-        type: "success",
+        type: 'info',
         content: (
           <>
             {response.message}
@@ -41,6 +47,7 @@ export default function LogisticsScreen({ onBack, data }) {
       <Form
         form={form}
         layout="vertical"
+        size="small"
         onFinish={handleFinish}
         initialValues={{
           deliveryDays: 1,
@@ -59,7 +66,13 @@ export default function LogisticsScreen({ onBack, data }) {
           name="targetDate"
           rules={[{ required: true, message: "Выберите дату" }]}
         >
-          <DatePicker style={{ width: "100%" }} placement="bottomLeft" size="small"/>
+          <ConfigProvider locale={ruRU}>
+            <DatePicker
+              style={{ width: "100%" }}
+              placement="bottomLeft"
+              size="small"
+            />
+          </ConfigProvider>
         </Form.Item>
 
         <Form.Item
@@ -68,8 +81,8 @@ export default function LogisticsScreen({ onBack, data }) {
           extra={
             <>
               Если поле пустое — будут посчитаны все позиции.<br />
-              Для определенных позиций указать их через запятую (1,3,4,7)<br />
-              Для определенных позиций и количества указать их через запятую в формате "номер-количество" (1-2,4-5)
+              Для определенных позиций — указать их через запятую (1,3,4,7)<br />
+              Для определенных позиций и количества — указать их через запятую в формате "номер-количество" (1-2,4-5)
             </>
           }
         >
@@ -92,7 +105,7 @@ export default function LogisticsScreen({ onBack, data }) {
 
         <Form.Item>
           <Space>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" disabled={disabled}>
               Отправить заявку
             </Button>
             <Button onClick={() => form.resetFields()}>Очистить</Button>
