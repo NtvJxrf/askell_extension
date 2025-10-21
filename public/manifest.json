@@ -13,11 +13,8 @@
   "host_permissions": [
     "https://online.moysklad.ru/*",
     "https://calc.askell.ru/*",
-    "https://*.google.com/*"
+    "https://*.google.com/*",
+    "https://api.moysklad.ru/*"
   ],
-  "side_panel": {
-    "default_path": "src/popup/popup.html",
-    "enabled": true
-  },
   "permissions": ["storage", "tabs", "activeTab", "scripting", "windows"]
 }
