@@ -7,20 +7,14 @@
 
   let attributes = [];
 
-  // === Загрузка списка полей из стора ===
   async function getAttributes() {
     return new Promise((resolve) => {
       chrome.storage.local.get("attributesList", (result) => {
-        if (Array.isArray(result.attributesList) && result.attributesList.length > 0) {
-          resolve(result.attributesList);
-        } else {
-          resolve([]);
-        }
+        resolve(Array.isArray(result.attributesList) ? result.attributesList : []);
       });
     });
   }
 
-  // === Ждём появления .attributes-list внутри data-payload="CustomerOrder" ===
   function waitForCustomerOrderAttributesList(callback) {
     const findContainer = () =>
       document.querySelector('[data-payload="CustomerOrder"] .attributes-list');
@@ -47,24 +41,52 @@
     });
   }
 
-  // === Основная подсветка ===
+  function getInputElement(fieldWrapper) {
+    const dateInput = fieldWrapper.nextElementSibling?.querySelector("input.input-rdDkOR");
+    if (dateInput) {
+      return {
+        wrapper: fieldWrapper.nextElementSibling.querySelector(".wrapper-BF08q1"),
+        input: dateInput
+      };
+    }
+
+    const selectorWrapper = fieldWrapper.nextElementSibling?.querySelector(".inputWrapper-KGf69w");
+    if (selectorWrapper) {
+      return {
+        wrapper: selectorWrapper,
+        input: selectorWrapper.querySelector("input.input-_iScnU")
+      };
+    }
+
+    const simpleInput = fieldWrapper.nextElementSibling?.querySelector("input.input-Fe7P3R, input.input-tWkblY");
+    if (simpleInput) {
+      return {
+        wrapper: simpleInput,
+        input: simpleInput
+      };
+    }
+
+    return null;
+  }
+
   async function observeAttributesList(container) {
     attributes = await getAttributes();
-    const labelArray = Array.from(container.querySelectorAll("span.Q\\+YVt"));
-    if (!labelArray.length) return;
+    const labels = Array.from(container.querySelectorAll("span.formItemLabel-XuTXi8"));
+
+    if (!labels.length) return;
 
     const color = await getOutlineColor();
 
-    for (const label of labelArray) {
+    for (const label of labels) {
       if (!attributes.includes(label.innerText)) continue;
 
-      const fieldWrapper = label.closest(".Ni4c2.field-name");
-      const wrapper = fieldWrapper?.nextElementSibling;
-      const input = wrapper?.querySelector("input");
+      const fieldWrapper = label.closest(".formItemTitle-ocRg5X.field-name");
+      if (!fieldWrapper) continue;
 
+      const { wrapper, input } = getInputElement(fieldWrapper) || {};
       if (!wrapper || !input) continue;
 
-      const updateStyle = () => {
+      const applyStyle = () => {
         if (!input.value.trim()) {
           wrapper.style.outline = `1.5px solid ${color}`;
           wrapper.style.borderColor = color;
@@ -74,35 +96,36 @@
         }
       };
 
-      updateStyle();
+      applyStyle();
 
-      const inputObserver = new MutationObserver(updateStyle);
-      inputObserver.observe(input, { attributes: true, attributeFilter: ["value"] });
+      const obs = new MutationObserver(applyStyle);
+      obs.observe(input, { attributes: true, attributeFilter: ["value"] });
     }
   }
 
-  // Запуск ожидания нужного контейнера
   waitForCustomerOrderAttributesList((container) => observeAttributesList(container));
 
-  // === Реакция на изменения настроек ===
   chrome.storage.onChanged.addListener(async (changes, area) => {
     if (area !== "local") return;
 
-    if (changes.outlineColor || changes.attributesList) {
-      const newColor = (changes.outlineColor && changes.outlineColor.newValue) || (await getOutlineColor());
+    if (changes.attributesList || changes.outlineColor) {
+      const newColor =
+        (changes.outlineColor && changes.outlineColor.newValue) || (await getOutlineColor());
+
       if (changes.attributesList) {
-        attributes = changes.attributesList.newValue || attributes;
+        attributes = changes.attributesList.newValue;
       }
 
       document
-        .querySelectorAll('[data-payload="CustomerOrder"] .Ni4c2.field-name')
+        .querySelectorAll('[data-payload="CustomerOrder"] .formItemTitle-ocRg5X.field-name')
         .forEach((fieldWrapper) => {
-          const label = fieldWrapper.querySelector("span.Q\\+YVt");
+          const label = fieldWrapper.querySelector("span.formItemLabel-XuTXi8");
           if (!label || !attributes.includes(label.innerText)) return;
 
-          const wrapper = fieldWrapper.nextElementSibling;
-          const input = wrapper?.querySelector("input");
-          if (!wrapper || !input) return;
+          const item = getInputElement(fieldWrapper);
+          if (!item) return;
+
+          const { wrapper, input } = item;
 
           if (!input.value.trim()) {
             wrapper.style.outline = `1.5px solid ${newColor}`;
@@ -116,10 +139,10 @@
   });
 
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg && msg.type === "PING_CUSTOMERORDER") {
+    if (msg?.type === "PING_CUSTOMERORDER") {
       sendResponse({ ok: true });
     }
   });
 
-  console.log("✅ customerorder.js initialized (scopes to data-payload=CustomerOrder)");
+  console.log("✅ customerorder.js initialized (new class selectors applied)");
 })();
