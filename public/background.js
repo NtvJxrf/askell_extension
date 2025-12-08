@@ -81,4 +81,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     })();
     return true; // async response
   }
+  if (msg.action === "createpzrequest") {
+    (async () => {
+      try {
+        const res = await fetch("https://calc.askell.ru/api/extension/createpz", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(msg.data),
+        });
+        const data = await res.json();
+        sendResponse(data);
+      } catch (err) {
+        console.error("fetch error:", err);
+        sendResponse({ error: err.message });
+      }
+    })();
+    return true; // async response
+  }
 });

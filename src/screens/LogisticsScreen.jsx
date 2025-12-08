@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Button, Typography, Form, Input, DatePicker, Select, InputNumber, Space, message, ConfigProvider} from "antd";
+import { Button, Typography, Form, Input, DatePicker, Select, InputNumber, Space, message, ConfigProvider } from "antd";
 import ruRU from "antd/locale/ru_RU";
 import dayjs from "dayjs";
 import 'dayjs/locale/ru';
 dayjs.locale("ru");
 const { Title } = Typography;
-const { Option } = Select;
 
 export default function LogisticsScreen({ onBack, data }) {
   const [form] = Form.useForm();
@@ -60,6 +59,14 @@ export default function LogisticsScreen({ onBack, data }) {
             rules={[{ required: true, message: "Введите количество дней" }]}
           >
             <InputNumber min={1} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Монтаж"
+            name="mounting"
+            rules={[{ required: true, message: "Выберите нужен ли монтаж" }]}
+          >
+            <Select options={[{label: 'Да', value: true}, {label: 'Нет', value: false}]} style={{ width: "100%" }} />
           </Form.Item>
 
           <Form.Item

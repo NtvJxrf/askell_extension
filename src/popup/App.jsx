@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Space, Typography, Divider } from "antd";
-import { FileTextOutlined, ShoppingOutlined, UndoOutlined, TruckOutlined, ExclamationCircleOutlined, MehOutlined, SettingOutlined } from "@ant-design/icons";
+import { FileTextOutlined, ShoppingOutlined, UndoOutlined, TruckOutlined, ExclamationCircleOutlined, MehOutlined, SettingOutlined, ToolOutlined } from "@ant-design/icons";
 import ReclamationScreen from '../screens/ReclamationScreen';
 import LogisticsScreen from '../screens/LogisticsScreen';
 import SettingsScreen from "../screens/SettingsScreen";
@@ -16,6 +16,7 @@ export default function App() {
       const url = tab?.url || "";
       if (url.includes("customerorder/edit")) setPageType("customerorder/edit");
       else if (url.includes("invoiceout/edit")) setPageType("invoiceout/edit");
+      else if (url.includes("internalorder/edit")) setPageType("internalorder/edit");
       else setPageType("unknown");
 
       try {
@@ -49,13 +50,22 @@ export default function App() {
           </Space>
         );
 
-      case "invoiceout":
+      case "invoiceout/edit":
         return (
           <Space direction="vertical" style={{ width: "100%" }}>
             <Button type="primary" icon={<FileTextOutlined />}>
               Печать счета
             </Button>
             <Button icon={<ShoppingOutlined />}>Отправить клиенту</Button>
+          </Space>
+        );
+
+      case "internalorder/edit":
+        return (
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <Button shape="round" icon={<ToolOutlined />} onClick={() => chrome.runtime.sendMessage({ action: "createpzrequest", data: {dataFromForm: {user, id: documentId}}})}>
+              Создать ПЗ
+            </Button>
           </Space>
         );
       default:
