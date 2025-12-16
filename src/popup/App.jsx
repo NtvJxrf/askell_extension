@@ -4,6 +4,7 @@ import { FileTextOutlined, ShoppingOutlined, UndoOutlined, TruckOutlined, Exclam
 import ReclamationScreen from '../screens/ReclamationScreen';
 import LogisticsScreen from '../screens/LogisticsScreen';
 import SettingsScreen from "../screens/SettingsScreen";
+import DefectScreen from "../screens/DefectScreen";
 const { Title, Text } = Typography;
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
       if (url.includes("customerorder/edit")) setPageType("customerorder/edit");
       else if (url.includes("invoiceout/edit")) setPageType("invoiceout/edit");
       else if (url.includes("internalorder/edit")) setPageType("internalorder/edit");
+      else if (url.includes("productiontask/edit")) setPageType("productiontask/edit");
       else setPageType("unknown");
 
       try {
@@ -50,15 +52,22 @@ export default function App() {
           </Space>
         );
 
-      case "invoiceout/edit":
+      case "productiontask/edit":
         return (
           <Space direction="vertical" style={{ width: "100%" }}>
-            <Button type="primary" icon={<FileTextOutlined />}>
-              Печать счета
-            </Button>
-            <Button icon={<ShoppingOutlined />}>Отправить клиенту</Button>
+            <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("defect")}>Создать ПЗ для брака</Button>
           </Space>
         );
+      
+      // case "invoiceout/edit":
+      //   return (
+      //     <Space direction="vertical" style={{ width: "100%" }}>
+      //       <Button type="primary" icon={<FileTextOutlined />}>
+      //         Печать счета
+      //       </Button>
+      //       <Button icon={<ShoppingOutlined />}>Отправить клиенту</Button>
+      //     </Space>
+      //   );
 
       case "internalorder/edit":
         return (
@@ -108,6 +117,12 @@ export default function App() {
       )}
       {screen === "logistics" && (
         <LogisticsScreen
+          onBack={() => setScreen("main")}
+          data={{ user, documentId }}
+        />
+      )}
+      {screen === "defect" && (
+        <DefectScreen
           onBack={() => setScreen("main")}
           data={{ user, documentId }}
         />

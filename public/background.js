@@ -64,6 +64,23 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     })();
     return true; // async response
   }
+  if (msg.action === "defectRequest") {
+    (async () => {
+      try {
+        const res = await fetch("https://calc.askell.ru/api/extension/defectRequest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(msg.data),
+        });
+        const data = await res.json();
+        sendResponse(data);
+      } catch (err) {
+        console.error("fetch error:", err);
+        sendResponse({ error: err.message });
+      }
+    })();
+    return true; // async response
+  }
   if (msg.action === "reclamationRequest") {
     (async () => {
       try {
