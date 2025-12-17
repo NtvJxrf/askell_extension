@@ -5,6 +5,7 @@ import ReclamationScreen from '../screens/ReclamationScreen';
 import LogisticsScreen from '../screens/LogisticsScreen';
 import SettingsScreen from "../screens/SettingsScreen";
 import DefectScreen from "../screens/DefectScreen";
+import MoveScreen from "../screens/MoveScreen";
 const { Title, Text } = Typography;
 
 export default function App() {
@@ -56,6 +57,7 @@ export default function App() {
         return (
           <Space direction="vertical" style={{ width: "100%" }}>
             <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("defect")}>Создать ПЗ для брака</Button>
+            <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("move")}>Создать перемещение</Button>
           </Space>
         );
       
@@ -123,6 +125,12 @@ export default function App() {
       )}
       {screen === "defect" && (
         <DefectScreen
+          onBack={() => setScreen("main")}
+          data={{ user, documentId }}
+        />
+      )}
+      {screen === "move" && (
+        <MoveScreen
           onBack={() => setScreen("main")}
           data={{ user, documentId }}
         />
