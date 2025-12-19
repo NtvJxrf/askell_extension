@@ -98,6 +98,37 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     })();
     return true; // async response
   }
+  if (msg.action === "productionlabels") {
+    (async () => {
+      try {
+        const res = await fetch("https://calc.askell.ru/api/extension/productionlabels", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(msg.data),
+        });
+        if (!res.ok) {
+          throw new Error('Ошибка генерации PDF')
+        }
+        const blob = await response.blob()
+
+        const url = window.URL.createObjectURL(blob)
+
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'labels.pdf'
+        document.body.appendChild(a)
+        a.click()
+
+        a.remove()
+        window.URL.revokeObjectURL(url)
+        sendResponse(true);
+      } catch (err) {
+        console.error("fetch error:", err);
+        sendResponse({ error: err.message });
+      }
+    })();
+    return true; // async response
+  }
   if (msg.action === "reclamationRequest") {
     (async () => {
       try {

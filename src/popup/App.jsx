@@ -6,6 +6,7 @@ import LogisticsScreen from '../screens/LogisticsScreen';
 import SettingsScreen from "../screens/SettingsScreen";
 import DefectScreen from "../screens/DefectScreen";
 import MoveScreen from "../screens/MoveScreen";
+import ProductionLabels from "../screens/ProductionLabels";
 const { Title, Text } = Typography;
 
 export default function App() {
@@ -58,6 +59,7 @@ export default function App() {
           <Space direction="vertical" style={{ width: "100%" }}>
             <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("defect")}>Создать ПЗ для брака</Button>
             <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("move")}>Создать перемещение</Button>
+            <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("productionlabels")}>Этикетки для производства</Button>
           </Space>
         );
       
@@ -131,6 +133,12 @@ export default function App() {
       )}
       {screen === "move" && (
         <MoveScreen
+          onBack={() => setScreen("main")}
+          data={{ user, documentId }}
+        />
+      )}
+      {screen === "productionlabels" && (
+        <ProductionLabels
           onBack={() => setScreen("main")}
           data={{ user, documentId }}
         />
