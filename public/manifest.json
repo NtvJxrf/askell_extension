@@ -16,5 +16,5 @@
     "https://*.google.com/*",
     "https://api.moysklad.ru/*"
   ],
-  "permissions": ["storage", "tabs", "activeTab", "scripting", "windows"]
+  "permissions": ["storage", "tabs", "activeTab", "scripting", "windows", "downloads"]
 }

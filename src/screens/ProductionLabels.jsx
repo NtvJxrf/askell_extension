@@ -22,7 +22,7 @@ export default function ProductionLabels({ onBack, data }) {
         type: 'info',
         content: (
           <>
-            Этикетки готовы
+            {response.message || 'Этикетки готовы'}
           </>
         ),
         duration: 6,

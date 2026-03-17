@@ -117,9 +117,9 @@
       }
 
       document
-        .querySelectorAll('[data-payload="CustomerOrder"] .formItemTitle-ocRg5X.field-name')
+        .querySelectorAll('[data-payload="CustomerOrder"] .formItemTitle-mlWoDT.field-name')
         .forEach((fieldWrapper) => {
-          const label = fieldWrapper.querySelector("span.formItemLabel-XuTXi8");
+          const label = fieldWrapper.querySelector("span.formItemLabel-RHHseB");
           if (!label || !attributes.includes(label.innerText)) return;
 
           const item = getInputElement(fieldWrapper);

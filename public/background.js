@@ -98,37 +98,118 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     })();
     return true; // async response
   }
-  if (msg.action === "productionlabels") {
+  if (msg.action === 'productionlabels') {
     (async () => {
       try {
-        const res = await fetch("https://calc.askell.ru/api/extension/productionlabels", {
+        const res = await fetch(
+          'https://calc.askell.ru/api/extension/productionlabels',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(msg.data)
+          }
+        )
+
+        if (!res.ok) {
+          throw new Error('Ошибка генерации PDF')
+        }
+        console.log(res)
+        const buffer = await res.arrayBuffer()
+
+        function arrayBufferToBase64(buffer) {
+          let binary = ''
+          const bytes = new Uint8Array(buffer)
+          const chunkSize = 0x8000
+
+          for (let i = 0; i < bytes.length; i += chunkSize) {
+            binary += String.fromCharCode(
+              ...bytes.subarray(i, i + chunkSize)
+            )
+          }
+
+          return btoa(binary)
+        }
+
+        const base64 = arrayBufferToBase64(buffer)
+
+        chrome.downloads.download({
+          url: `data:application/pdf;base64,${base64}`,
+          filename: 'labels.pdf',
+          saveAs: true
+        })
+
+        sendResponse(true)
+      } catch (err) {
+        console.error('fetch error:', err)
+        sendResponse({ error: err.message })
+      }
+    })()
+
+    return true
+  }
+
+  if (msg.action === "optywayExport") {
+    (async () => {
+      try {
+        const res = await fetch("https://calc.askell.ru/api/extension/optyway_export", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(msg.data),
         });
+
         if (!res.ok) {
-          throw new Error('Ошибка генерации PDF')
+          throw new Error(`Ошибка получения файла: ${res.status}`);
         }
-        const blob = await response.blob()
 
-        const url = window.URL.createObjectURL(blob)
+        const buffer = await res.arrayBuffer();
+        const contentType = res.headers.get("content-type") || "application/octet-stream";
+        const contentDisposition = res.headers.get("content-disposition") || "";
 
-        const a = document.createElement('a')
-        a.href = url
-        a.download = 'labels.pdf'
-        document.body.appendChild(a)
-        a.click()
+        function arrayBufferToBase64(fileBuffer) {
+          let binary = "";
+          const bytes = new Uint8Array(fileBuffer);
+          const chunkSize = 0x8000;
 
-        a.remove()
-        window.URL.revokeObjectURL(url)
-        sendResponse(true);
+          for (let i = 0; i < bytes.length; i += chunkSize) {
+            binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+          }
+
+          return btoa(binary);
+        }
+
+        function getFilenameFromDisposition(disposition) {
+          const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+          if (utf8Match?.[1]) {
+            return decodeURIComponent(utf8Match[1]);
+          }
+
+          const basicMatch = disposition.match(/filename="?([^";]+)"?/i);
+          if (basicMatch?.[1]) {
+            return basicMatch[1];
+          }
+
+          return "optyway-export.xlsx";
+        }
+
+        const base64 = arrayBufferToBase64(buffer);
+        const filename = getFilenameFromDisposition(contentDisposition);
+
+        chrome.downloads.download({
+          url: `data:${contentType};base64,${base64}`,
+          filename,
+          saveAs: true,
+        });
+
+        sendResponse({ message: "Файл готов к скачиванию" });
       } catch (err) {
         console.error("fetch error:", err);
         sendResponse({ error: err.message });
       }
     })();
-    return true; // async response
+
+    return true;
   }
+
   if (msg.action === "reclamationRequest") {
     (async () => {
       try {

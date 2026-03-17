@@ -7,6 +7,7 @@ import SettingsScreen from "../screens/SettingsScreen";
 import DefectScreen from "../screens/DefectScreen";
 import MoveScreen from "../screens/MoveScreen";
 import ProductionLabels from "../screens/ProductionLabels";
+import OptywayExportScreen from "../screens/OptywayExportScreen";
 const { Title, Text } = Typography;
 
 export default function App() {
@@ -60,6 +61,7 @@ export default function App() {
             <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("defect")}>Создать ПЗ для брака</Button>
             <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("move")}>Создать перемещение</Button>
             <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("productionlabels")}>Этикетки для производства</Button>
+            <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("optywayexport")}>Экспорт для Optiway</Button>
           </Space>
         );
       
@@ -139,6 +141,12 @@ export default function App() {
       )}
       {screen === "productionlabels" && (
         <ProductionLabels
+          onBack={() => setScreen("main")}
+          data={{ user, documentId }}
+        />
+      )}
+      {screen === "optywayexport" && (
+        <OptywayExportScreen
           onBack={() => setScreen("main")}
           data={{ user, documentId }}
         />
