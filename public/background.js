@@ -148,6 +148,56 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true
   }
 
+  if (msg.action === 'customerlabels') {
+    (async () => {
+      try {
+        const res = await fetch(
+          'https://calc.askell.ru/api/extension/customerlabels',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(msg.data)
+          }
+        )
+
+        if (!res.ok) {
+          throw new Error('Ошибка генерации PDF')
+        }
+        console.log(res)
+        const buffer = await res.arrayBuffer()
+
+        function arrayBufferToBase64(buffer) {
+          let binary = ''
+          const bytes = new Uint8Array(buffer)
+          const chunkSize = 0x8000
+
+          for (let i = 0; i < bytes.length; i += chunkSize) {
+            binary += String.fromCharCode(
+              ...bytes.subarray(i, i + chunkSize)
+            )
+          }
+
+          return btoa(binary)
+        }
+
+        const base64 = arrayBufferToBase64(buffer)
+
+        chrome.downloads.download({
+          url: `data:application/pdf;base64,${base64}`,
+          filename: 'labels.pdf',
+          saveAs: true
+        })
+
+        sendResponse(true)
+      } catch (err) {
+        console.error('fetch error:', err)
+        sendResponse({ error: err.message })
+      }
+    })()
+
+    return true
+  }
+
   if (msg.action === "optywayExport") {
     (async () => {
       try {
@@ -188,7 +238,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             return basicMatch[1];
           }
 
-          return "optyway-export.xlsx";
+          return "optyway-export.xls";
         }
 
         const base64 = arrayBufferToBase64(buffer);
@@ -243,5 +293,32 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       }
     })();
     return true; // async response
+  }
+
+  if (msg.action === "goodInfoRequest") {
+    (async () => {
+      try {
+        const res = await fetch("https://calc.askell.ru/api/extension/goodInfo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(msg.data),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          sendResponse({
+            error: data?.error || data?.message || `Ошибка получения информации по товару: ${res.status}`,
+          });
+          return;
+        }
+
+        sendResponse(data);
+      } catch (err) {
+        console.error("fetch error:", err);
+        sendResponse({ error: err.message });
+      }
+    })();
+    return true;
   }
 });

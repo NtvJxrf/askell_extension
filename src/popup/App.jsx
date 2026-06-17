@@ -7,7 +7,9 @@ import SettingsScreen from "../screens/SettingsScreen";
 import DefectScreen from "../screens/DefectScreen";
 import MoveScreen from "../screens/MoveScreen";
 import ProductionLabels from "../screens/ProductionLabels";
+import CustomerLabels from "../screens/CustomerLabels";
 import OptywayExportScreen from "../screens/OptywayExportScreen";
+import GoodInfoScreen from "../screens/GoodInfoScreen";
 const { Title, Text } = Typography;
 
 export default function App() {
@@ -21,6 +23,7 @@ export default function App() {
       if (url.includes("customerorder/edit")) setPageType("customerorder/edit");
       else if (url.includes("invoiceout/edit")) setPageType("invoiceout/edit");
       else if (url.includes("internalorder/edit")) setPageType("internalorder/edit");
+      else if (url.includes("good/edit")) setPageType("good/edit");
       else if (url.includes("productiontask/edit")) setPageType("productiontask/edit");
       else setPageType("unknown");
 
@@ -52,6 +55,7 @@ export default function App() {
           <Space direction="vertical" style={{ width: "100%" }}>
             <Button shape="round" icon={<ExclamationCircleOutlined />} onClick={() => setScreen("reclamation")}>Создать рекламацию</Button>
             <Button shape="round" icon={<TruckOutlined />} onClick={() => setScreen("logistics")}>Заявка логисту</Button>
+            <Button shape="round" icon={<FileTextOutlined />} onClick={() => setScreen("customerlabels")}>Этикетки на готовые изделия</Button>
           </Space>
         );
 
@@ -83,6 +87,16 @@ export default function App() {
             </Button>
           </Space>
         );
+
+      case "good/edit":
+        return (
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <Button shape="round" icon={<ShoppingOutlined />} onClick={() => setScreen("goodInfo")}>
+              Получить информацию о товаре
+            </Button>
+          </Space>
+        );
+
       default:
         return <Text type="secondary">На этой странице для вас ничго нет <MehOutlined /> </Text>;
     }
@@ -145,8 +159,20 @@ export default function App() {
           data={{ user, documentId }}
         />
       )}
+      {screen === "customerlabels" && (
+        <CustomerLabels
+          onBack={() => setScreen("main")}
+          data={{ user, documentId }}
+        />
+      )}
       {screen === "optywayexport" && (
         <OptywayExportScreen
+          onBack={() => setScreen("main")}
+          data={{ user, documentId }}
+        />
+      )}
+      {screen === "goodInfo" && (
+        <GoodInfoScreen
           onBack={() => setScreen("main")}
           data={{ user, documentId }}
         />

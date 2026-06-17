@@ -1,0 +1,227 @@
+.good-info-screen {
+  min-height: 100%;
+  padding: 14px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 243, 219, 0.95), transparent 28%),
+    radial-gradient(circle at top right, rgba(196, 231, 221, 0.9), transparent 24%),
+    linear-gradient(180deg, #f7f3eb 0%, #eef4f0 100%);
+}
+
+.good-info-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.good-info-hero,
+.good-info-section-card {
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 14px 32px rgba(33, 53, 71, 0.1);
+}
+
+.good-info-hero {
+  position: relative;
+  border: 0;
+  background: linear-gradient(135deg, #1f3147 0%, #355c62 48%, #8cab7a 100%);
+}
+
+.good-info-hero::before {
+  position: absolute;
+  top: -36px;
+  right: -26px;
+  width: 220px;
+  height: 220px;
+  content: "";
+  background: rgba(255, 255, 255, 0.11);
+  border-radius: 50%;
+}
+
+.good-info-hero::after {
+  position: absolute;
+  bottom: -84px;
+  left: -54px;
+  width: 230px;
+  height: 230px;
+  content: "";
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+.good-info-hero .ant-card-body {
+  position: relative;
+  z-index: 1;
+  padding: 18px;
+}
+
+.good-info-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.good-info-overline,
+.good-info-hero-title,
+.good-info-hero-paragraph,
+.good-info-descriptions .ant-descriptions-item-label,
+.good-info-descriptions .ant-descriptions-item-content {
+  color: #f7fbf9 !important;
+}
+
+.good-info-overline {
+  display: inline-block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.82;
+}
+
+.good-info-hero-title {
+  max-width: 620px;
+  margin: 0 0 6px !important;
+  line-height: 1.12;
+}
+
+.good-info-hero-paragraph {
+  max-width: 600px;
+  margin-bottom: 0 !important;
+  font-size: 13px;
+  opacity: 0.92;
+}
+
+.good-info-descriptions {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.good-info-descriptions .ant-descriptions-view table {
+  table-layout: fixed;
+}
+
+.good-info-descriptions .ant-descriptions-item {
+  padding-bottom: 6px;
+}
+
+.good-info-descriptions .ant-descriptions-item-label,
+.good-info-descriptions .ant-descriptions-item-content {
+  font-size: 12px;
+}
+
+.good-info-section-card {
+  border: 1px solid rgba(25, 53, 69, 0.08);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+}
+
+.good-info-section-card .ant-card-body {
+  padding: 14px;
+}
+
+.good-info-stats-row {
+  margin-top: -2px;
+}
+
+.good-info-stat-plain {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 56px;
+}
+
+.good-info-stat-label {
+  color: rgba(31, 49, 71, 0.72);
+  font-size: 11px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.good-info-stat-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1f3147;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.good-info-stat-value .anticon {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.good-info-stat-meta {
+  color: rgba(31, 49, 71, 0.64);
+  font-size: 11px;
+}
+
+.good-info-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.good-info-section-card .ant-table-wrapper {
+  overflow: hidden;
+}
+
+.good-info-section-card .ant-table {
+  background: transparent;
+}
+
+.good-info-section-card .ant-table-thead > tr > th {
+  background: rgba(240, 245, 242, 0.9);
+}
+
+.good-info-section-card .ant-table-cell,
+.good-info-section-card .ant-table-thead > tr > th {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.good-info-section-card .ant-table-tbody > tr > td:first-child,
+.good-info-section-card .ant-table-thead > tr > th:first-child {
+  white-space: normal;
+}
+
+.good-info-section-card .ant-progress-text,
+.good-info-section-card .ant-alert-message,
+.good-info-section-card .ant-alert-description,
+.good-info-section-card .ant-typography,
+.good-info-section-card .ant-tag {
+  font-size: 12px;
+}
+
+@media (max-width: 640px) {
+  .good-info-screen {
+    padding: 12px;
+  }
+
+  .good-info-toolbar,
+  .good-info-section-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .good-info-stats-row > .ant-col {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .good-info-hero-title {
+    font-size: 22px !important;
+  }
+}
